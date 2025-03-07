@@ -94,7 +94,7 @@ def get_end_date():
             return pd.to_datetime(end_date, dayfirst=True)
 
 def get_date_range_all():
-    df1 = pd.read_csv("Task4a_data.csv") 
+    df1 = pd.read_csv("esp/Task4a_data.csv") 
 
     df1["Date"] = pd.to_datetime(df1["Date"], dayfirst=True)
 
@@ -140,5 +140,5 @@ def process_menu_choice():
 
 start_date = get_start_date() # program starts here and goes to the get_start_date function and returns a start date 
 end_date = get_end_date()# program starts here and goes to the get_end_date function and returns a end date
-profit_choice = profit_loss_menu()#
-process_menu_choice()
+profit_choice = profit_loss_menu()# goes to profit loss menu 
+process_menu_choice() # 
