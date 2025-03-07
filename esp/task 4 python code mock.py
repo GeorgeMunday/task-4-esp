@@ -17,9 +17,11 @@ def profit_loss_menu():
         print("Welcome! Please choose an option from the list")
         print("1. Show profit/loss for specific products")
         print("2. Show profit/loss for all products")
+        print("3. show profit/loss for all products (in a graph)")
+        print("4. Show profit/loss for specific products (in a graph)")
         print("###############################################")  # outputs this message
 
-        profit_loss_choice = input("Please enter the number of your choice (1-2): ")  # you input a valid input  
+        profit_loss_choice = input("Please enter the number of your choice (1-4): ")  # you input a valid input  
 
         try:
             int(profit_loss_choice)  # validation to see if it is an integer 
@@ -114,7 +116,6 @@ def get_date_range_product(start_date, end_date):
 
     total = round(product_results["Profit subtotal"].sum(), 2)  # Calculate total profit/loss for the product
     results_print = product_results.to_string(index=False)  # Convert results to string for printing
-
     print(results_print)
     print(f"The profit/loss for the {product_name} for the selected time frame was £{total}")
 
