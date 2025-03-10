@@ -20,6 +20,7 @@ def profit_loss_menu():
         print("2. Show profit/loss for all products")
         print("3. show profit/loss for specific products (in a graph)")
         print("4. Show profit/loss for all products (in a graph)")
+        print("5. how much of each product was sold in a specific time frame (in a graph)")
         print("###############################################")  # outputs this message
 
         profit_loss_choice = input("Please enter the number of your choice (1-4): ")  # you input a valid input  
@@ -30,7 +31,7 @@ def profit_loss_menu():
             print("Sorry, you did not enter a valid choice")
             flag = True  # flag set to true so it restarts the while loop when you input an invalid choice
         else:
-            if int(profit_loss_choice) < 1 or int(profit_loss_choice) > 4:  # validation to see if it is within the range 
+            if int(profit_loss_choice) < 1 or int(profit_loss_choice) > 5:  # validation to see if it is within the range 
                 print("Sorry, you did not enter a valid choice")
                 flag = True  # flag set to true so it restarts the while loop when you input an invalid choice
             else:
@@ -153,6 +154,24 @@ def get_date_range_product_graph(start_date, end_date):
     plt.title(f"Profit/Loss for {product_name}")
     plt.show()
 
+def get_data_range_product_amount(start_date, end_date):
+    product_name = get_product_choice()  # Get the product choice from the user
+    df5 = pd.read_csv("esp/Task4a_data.csv")  # Reading the CSV file
+
+    df5["Date"] = pd.to_datetime(df5["Date"], dayfirst=True)  # Convert the 'Date' column to datetime format
+
+    product_results = df5.loc[(df5["Date"] >= start_date) & (df5["Date"] <= end_date) & (df5["Product"] == product_name)].copy()
+
+    product_results = product_result(product_results)  # Apply the product result function
+
+    product_results = product_results.groupby("Date")["KGs Sold"].sum().reset_index()  # Group by date and sum the amount sold
+    plt.plot(product_results["Date"], product_results["KGs Sold"])  # Plot the graph
+    plt.xlabel("Date")  # Label the x-axis
+    plt.ylabel("Amount Sold")  # Label the y-axis
+    plt.title(f"Amount of {product_name} sold")  # Title the graph
+    plt.show()
+    
+
 def process_menu_choice(start_date, end_date, profit_choice):
     if profit_choice == 1:
         get_date_range_product(start_date, end_date)
@@ -162,6 +181,8 @@ def process_menu_choice(start_date, end_date, profit_choice):
         get_date_range_product_graph(start_date, end_date)
     elif profit_choice == 4:
         get_date_range_all_graph(start_date, end_date)
+    elif profit_choice == 5:
+        get_data_range_product_amount(start_date, end_date) # Goes to get_data_range_product_amount
 
 # Main program execution
 start_date = get_start_date()  # Program starts here and goes to the get_start_date function and returns a start date 
