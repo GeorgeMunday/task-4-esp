@@ -1,5 +1,6 @@
 import pandas as pd
 import datetime
+import matplotlib.pyplot as plt
 
 def product_result(product_results):
     # Update the product results with cost, sales, and profit subtotals
@@ -17,8 +18,8 @@ def profit_loss_menu():
         print("Welcome! Please choose an option from the list")
         print("1. Show profit/loss for specific products")
         print("2. Show profit/loss for all products")
-        print("3. show profit/loss for all products (in a graph)")
-        print("4. Show profit/loss for specific products (in a graph)")
+        print("3. show profit/loss for specific products (in a graph)")
+        print("4. Show profit/loss for all products (in a graph)")
         print("###############################################")  # outputs this message
 
         profit_loss_choice = input("Please enter the number of your choice (1-4): ")  # you input a valid input  
@@ -29,7 +30,7 @@ def profit_loss_menu():
             print("Sorry, you did not enter a valid choice")
             flag = True  # flag set to true so it restarts the while loop when you input an invalid choice
         else:
-            if int(profit_loss_choice) < 1 or int(profit_loss_choice) > 2:  # validation to see if it is within the range 
+            if int(profit_loss_choice) < 1 or int(profit_loss_choice) > 4:  # validation to see if it is within the range 
                 print("Sorry, you did not enter a valid choice")
                 flag = True  # flag set to true so it restarts the while loop when you input an invalid choice
             else:
@@ -105,25 +106,62 @@ def get_date_range_all(start_date, end_date):
     print("The overall profit/loss for the selected time frame was £{}".format(total))
 
 def get_date_range_product(start_date, end_date):
-    product_name = get_product_choice()  # Get the product choice from the user
-    df2 = pd.read_csv("esp/Task4a_data.csv")  # Reading the CSV file
+    product_name = get_product_choice()  # get the product choice from the user
+    df2 = pd.read_csv("esp/Task4a_data.csv")  # reading the CSV file
 
-    df2["Date"] = pd.to_datetime(df2["Date"], dayfirst=True)  # Convert the 'Date' column to datetime format
+    df2["Date"] = pd.to_datetime(df2["Date"], dayfirst=True)  # convert the 'Date' column to datetime format
 
     product_results = df2.loc[(df2["Date"] >= start_date) & (df2["Date"] <= end_date) & (df2["Product"] == product_name)].copy()
 
-    product_results = product_result(product_results)  # Apply the product result function
+    product_results = product_result(product_results)  # apply the product result function
 
-    total = round(product_results["Profit subtotal"].sum(), 2)  # Calculate total profit/loss for the product
-    results_print = product_results.to_string(index=False)  # Convert results to string for printing
+    total = round(product_results["Profit subtotal"].sum(), 2)  # calculate total profit/loss for the product
+    results_print = product_results.to_string(index=False)  # convert results to string for printing
     print(results_print)
     print(f"The profit/loss for the {product_name} for the selected time frame was £{total}")
+    
+def get_date_range_all_graph(start_date, end_date):
+    df3 = pd.read_csv("esp/Task4a_data.csv")  # reading the CSV file
+
+    df3["Date"] = pd.to_datetime(df3["Date"], dayfirst=True)  # convert the 'Date' column to datetime format
+
+    results = df3.loc[(df3["Date"] >= start_date) & (df3["Date"] <= end_date), df3.columns != "Supplier"].copy()  # Filter by date range
+
+    results = product_result(results)  # apply the product result function
+
+    results = results.groupby("Date")["Profit subtotal"].sum().reset_index()  # group by date and sum the profit/loss
+    plt.plot(results["Date"], results["Profit subtotal"])  # plot the graph
+    plt.xlabel("Date")
+    plt.ylabel("Profit/Loss")
+    plt.title("Profit/Loss for all products")
+    plt.show()
+    
+def get_date_range_product_graph(start_date, end_date):
+    product_name = get_product_choice()  # Get the product choice from the user
+    df4 = pd.read_csv("esp/Task4a_data.csv")  # Reading the CSV file
+
+    df4["Date"] = pd.to_datetime(df4["Date"], dayfirst=True)  # Convert the 'Date' column to datetime format
+
+    product_results = df4.loc[(df4["Date"] >= start_date) & (df4["Date"] <= end_date) & (df4["Product"] == product_name)].copy()
+
+    product_results = product_result(product_results)  # Apply the product result function
+
+    product_results = product_results.groupby("Date")["Profit subtotal"].sum().reset_index()  # Group by date and sum the profit/loss
+    plt.plot(product_results["Date"], product_results["Profit subtotal"])  # Plot the graph
+    plt.xlabel("Date")
+    plt.ylabel("Profit/Loss")
+    plt.title(f"Profit/Loss for {product_name}")
+    plt.show()
 
 def process_menu_choice(start_date, end_date, profit_choice):
     if profit_choice == 1:
         get_date_range_product(start_date, end_date)
-    else:
+    elif profit_choice == 2:
         get_date_range_all(start_date, end_date)
+    elif profit_choice == 3:
+        get_date_range_product_graph(start_date, end_date)
+    elif profit_choice == 4:
+        get_date_range_all_graph(start_date, end_date)
 
 # Main program execution
 start_date = get_start_date()  # Program starts here and goes to the get_start_date function and returns a start date 
