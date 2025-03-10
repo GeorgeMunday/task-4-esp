@@ -23,7 +23,7 @@ def profit_loss_menu():
         print("5. how much of each product was sold in a specific time frame (in a graph)")
         print("###############################################")  # outputs this message
 
-        profit_loss_choice = input("Please enter the number of your choice (1-4): ")  # you input a valid input  
+        profit_loss_choice = input("Please enter the number of your choice (1-5): ")  # you input a valid input  
 
         try:
             int(profit_loss_choice)  # validation to see if it is an integer 
